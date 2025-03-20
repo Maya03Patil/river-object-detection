@@ -1,0 +1,24 @@
+{
+  "name": "object-detection",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node train.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "@tensorflow/tfjs-node-gpu": "^4.22.0",
+    "axios": "^1.8.3",
+    "bing-image-downloader": "^0.0.4",
+    "cheerio": "^1.0.0",
+    "fs": "^0.0.1-security",
+    "image-downloader": "^4.3.0",
+    "path": "^0.12.7",
+    "sharp": "^0.33.5"
+  }
+}
