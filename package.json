@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node train.js"
+    "train": "node train.js",
+    "predict": "node predict.js",
+    "test": "node predict.js test.jpg"
   },
   "author": "",
   "license": "ISC",
