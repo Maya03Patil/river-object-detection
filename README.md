@@ -1,19 +1,18 @@
 # River Detection Model
 
-This project trains a Convolutional Neural Network (CNN) using TensorFlow.js to classify images as containing a river or not. The trained model can then be used to predict whether a given image contains a river.
+This project trains a Convolutional Neural Network (CNN) using TensorFlow.js to classify images as containing a river or not. It uses **transfer learning** with a MobileNet backbone for high accuracy even on small datasets, and includes built-in memory management, data augmentation, early stopping, and learning-rate scheduling.
 
 ## Technologies Used
 - **Node.js** - JavaScript runtime for executing scripts
 - **TensorFlow.js** - Machine learning library for training and inference
-- **fs (File System)** - Node.js module for handling files
-- **path** - Node.js module for working with file paths
+- **MobileNet v1** - Pretrained feature extractor used via transfer learning
 - **glob** - Library to match file paths for dataset loading
 
 ## Project Structure
 ```
 |-- dataset/
-|   |-- river/
-|   |-- no_river/
+|   |-- rivers/
+|   |-- no-rivers/
 |-- trained_model/
 |-- train.js
 |-- predict.js
@@ -23,39 +22,53 @@ This project trains a Convolutional Neural Network (CNN) using TensorFlow.js to 
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-username/river-detection.git
-   cd river-detection
+   git clone https://github.com/Maya03Patil/river-object-detection.git
+   cd river-object-detection
    ```
 2. Install dependencies:
    ```sh
-   npm install @tensorflow/tfjs-node glob
+   npm install
    ```
 
 ## Dataset Preparation
-- Create a `dataset/` folder with two subfolders: `river/` and `no_river/`.
-- Add labeled images to each category (`.jpg`, `.png`, or `.jpeg`).
+- Place labelled images inside `dataset/` in subfolders (e.g. `rivers/`, `no-rivers/`).
+- Supported formats: `.jpg`, `.png`, `.jpeg`.
+- The folder names become the class labels (sorted alphabetically).
 
 ## Training the Model
-Run the following command to train the model:
 ```sh
+npm run train
+# or
 node train.js
 ```
-- The model will be saved in the `trained_model/` directory after training.
+
+### Training features
+- **Transfer learning** – Uses a frozen MobileNet v1 (0.25 alpha) as a feature extractor with a custom classification head. Falls back to a custom CNN if MobileNet cannot be downloaded.
+- **Data augmentation** – Random horizontal/vertical flips, brightness jitter, contrast adjustment, and Gaussian noise (applied to training set only).
+- **Early stopping** – Stops training when validation loss stops improving (patience = 8 epochs).
+- **Learning-rate reduction** – Halves the learning rate when validation loss plateaus for 4 consecutive epochs.
+- **L2 regularization & dropout** – Reduces overfitting on small datasets.
+- **Memory management** – Uses `tf.tidy()` and explicit tensor disposal to prevent memory leaks.
+
+The trained model is saved to the `trained_model/` directory.
 
 ## Making Predictions
-Run the following command to classify an image:
 ```sh
-node predict.js 
+# Single image
+node predict.js path/to/image.jpg
+
+# Multiple images (batch mode)
+node predict.js img1.jpg img2.png img3.jpeg
+
+# Default (uses test.jpg)
+npm run predict
 ```
-Example:
-```sh
-node predict.js 
-```
-The output will indicate whether the image contains a river based on confidence scores.
+
+The output shows per-class confidence scores with a visual bar chart and a final verdict.
 
 ## Prediction Logic
-- If the confidence for "river" is **above 70%**, it outputs: `✅ Detected: River`.
-- Otherwise, it outputs: `❌ Detected: No-River`.
+- If the confidence for "rivers" is **above 60%**, it outputs: `River detected`.
+- Otherwise, it outputs: `No river detected`.
 
 ## License
 This project is open-source. Feel free to modify and improve it!
